@@ -3,24 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 
-public class MyBuilder {
+public class MyBuilder : MonoBehaviour {
     // ビルド実行でAndroidのapkを作成する例
-    [UnityEditor.MenuItem("Tools/Build Project AllScene Android")]
+    [MenuItem("Build/BuildAndroid")]
     public static void BuildProjectAllSceneAndroid() {
         EditorUserBuildSettings.SwitchActiveBuildTarget( BuildTarget.Android );
-        List<string> allScene = new List<string>();
-        foreach( EditorBuildSettingsScene scene in EditorBuildSettings.scenes ){
-            if (scene.enabled) {
-                allScene.Add (scene.path);
-            }
-        }
+        string outputPath = Application.dataPath + "/../debug-app.apk";
         PlayerSettings.bundleIdentifier = "jp.kappa0923.unity_test";
+        PlayerSettings.bundleVersion = "1.0";
         PlayerSettings.statusBarHidden = true;
-        BuildPipeline.BuildPlayer(
-            allScene.ToArray(),
-            "debug-app.apk",
+        string errorMessage = BuildPipeline.BuildPlayer(
+            EditorBuildSettings.scenes,
+            outputPath,
             BuildTarget.Android,
             BuildOptions.None
         );
+
+        if (string.IsNullOrEmpty(errorMessage)) {
+            Debug.Log("[Success]");
+        } else {
+            Debug.Log("[Failure]" + errorMessage);
+        }
     }
 }
