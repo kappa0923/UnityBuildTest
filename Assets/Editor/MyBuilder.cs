@@ -12,8 +12,9 @@ public class MyBuilder : MonoBehaviour {
         PlayerSettings.bundleIdentifier = "jp.kappa0923.unity_test";
         PlayerSettings.bundleVersion = "1.0";
         PlayerSettings.statusBarHidden = true;
+        string[] levels = { "Assets/scene01.unity" };
         string errorMessage = BuildPipeline.BuildPlayer(
-            EditorBuildSettings.scenes,
+            levels,
             outputPath,
             BuildTarget.Android,
             BuildOptions.None
