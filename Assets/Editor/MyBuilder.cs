@@ -22,7 +22,7 @@ public class MyBuilder : MonoBehaviour {
         PlayerSettings.bundleIdentifier = "jp.kappa0923.unity_test";
         PlayerSettings.bundleVersion = "1.0";
         PlayerSettings.statusBarHidden = true;
-        string[] levels = GetAllScenePaths;
+        string[] levels = GetAllScenePaths();
         string errorMessage = BuildPipeline.BuildPlayer(
             levels,
             outputPath,
@@ -42,6 +42,12 @@ public class MyBuilder : MonoBehaviour {
      * @return 全シーンのリスト
      */
     private static string[] GetAllScenePaths() {
-        return EditorBuildSettings.scenes.Select(scene => scene.path).ToArray();
+        List<string> allScene = new List<string>();
+        foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes) {
+            if (scene.enabled) {
+                allScene.Add(scene.path);
+            }
+        }
+        return allScene.ToArray();
     }
 }
