@@ -2,9 +2,19 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using System.Linq;
 
+/**
+ * コマンドラインからapkをビルドするクラス
+ * Assets\Editor\ に配置する
+ */
 public class MyBuilder : MonoBehaviour {
-    // ビルド実行でAndroidのapkを作成する例
+    /*
+     * コマンドラインからapkをビルドする
+     * メニューからも実行できる
+     * @code bundleIdentifier アプリごとに一意
+     * @code bundleVersion ビルドバージョン
+     */
     [MenuItem("Build/BuildAndroid")]
     public static void BuildProjectAllSceneAndroid() {
         EditorUserBuildSettings.SwitchActiveBuildTarget( BuildTarget.Android );
@@ -12,7 +22,7 @@ public class MyBuilder : MonoBehaviour {
         PlayerSettings.bundleIdentifier = "jp.kappa0923.unity_test";
         PlayerSettings.bundleVersion = "1.0";
         PlayerSettings.statusBarHidden = true;
-        string[] levels = { "Assets/scene01.unity" };
+        string[] levels = GetAllScenePaths;
         string errorMessage = BuildPipeline.BuildPlayer(
             levels,
             outputPath,
@@ -25,5 +35,13 @@ public class MyBuilder : MonoBehaviour {
         } else {
             Debug.Log("[Failure]" + errorMessage);
         }
+    }
+
+    /**
+     * 全シーンを取得
+     * @return 全シーンのリスト
+     */
+    private static string[] GetAllScenePaths() {
+        return EditorBuildSettings.scenes.Select(scene => scene.path).ToArray();
     }
 }
